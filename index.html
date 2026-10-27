@@ -340,7 +340,7 @@ function fill(v, r) {
 }
 function makeLabel(r) {
   const d = document.createElement('div');
-  d.className = 'label'; d.dir = 'auto'; d.style.cssText = `width:${+$('w').value || 50}mm;height:${+$('h').value || 30}mm`;
+  d.className = 'label'; d.dir = 'auto'; d.style.cssText = `width:${+$('w').value || 50}sm;height:${+$('h').value || 30}sm`;
   const c = code(r);
   const bcOf = e => {
     const b = document.createElement('div'); b.className = 'bc'; b.innerHTML = '<svg></svg>'; d.appendChild(b);
