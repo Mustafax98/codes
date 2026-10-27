@@ -201,7 +201,14 @@ function preset(n) {
     compact: [T(j(f('product'), f('style'), f('color'), f('age')), 7), B],
     barcode: [B]
   };
-  return norm((P[n] || P.classic).filter(Boolean));
+  return syncFields(norm((P[n] || P.classic).filter(Boolean)));
+}
+// أي عمود في الجدول مش موجود في التصميم يتضاف كسطر مخفي (فعّله بزر "إظهار")
+function syncFields(a) {
+  const mx = () => a.reduce((m, e) => Math.max(m, e.row || 0), 0) + 1;
+  headers.filter(h => h !== map.sku && !a.some(e => e.t === 'text' && String(e.v).includes(`{${h}}`)))
+    .forEach(h => a.push({ t: 'text', v: `{${h}}`, size: 6.5, bold: false, align: 'center', row: mx(), label: h, show: false }));
+  return a;
 }
 const nextRow = () => els.reduce((m, e) => Math.max(m, e.row || 0), 0) + 1;
 function norm(a) {
@@ -261,6 +268,7 @@ $('tpl').onchange = () => { if ($('tpl').value !== 'custom') { els = preset($('t
 function start(fresh) {
   ['dataCard', 'setCard', 'prevCard'].forEach(i => $(i).hidden = false);
   if (fresh && ($('tpl').value !== 'custom' || !els.length)) els = preset($('tpl').value);
+  els = syncFields(els);
   drawTable(); drawDes(); render(); save();
 }
 async function load(file) {
