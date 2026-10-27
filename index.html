@@ -51,7 +51,8 @@ td input[type=text]{width:100%;min-width:120px;text-align:center}
 .ctl{display:flex;gap:4px;margin-inline-start:auto}
 #paper{background:#e8e3e8;border-radius:8px;padding:16px;overflow:auto;min-height:160px}
 #area{display:flex;flex-wrap:wrap;gap:2mm;align-content:flex-start}
-.label{background:#fff;border:1px dashed #9a8fa0;padding:1.5mm;display:flex;flex-direction:column;overflow:hidden;line-height:1.25;font-family:Arial,Tahoma,sans-serif;color:#000}
+.label{background:#fff;border:1px dashed #9a8fa0;box-sizing:border-box;overflow:hidden;font-family:Arial,Tahoma,sans-serif;color:#000}
+.label .in{width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;overflow:hidden;line-height:1.25;outline:1px dotted #c9bfd0;outline-offset:-1px}
 .label .ln{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .label .bc{flex:1;min-height:0;display:flex}
 .label svg{width:100%;height:100%}
@@ -78,6 +79,7 @@ td input[type=text]{width:100%;min-width:120px;text-align:center}
   #printArea{display:flex;flex-wrap:wrap;align-content:flex-start}
   #printArea.sheet{gap:2mm}
   #printArea .label{border:none}
+  #printArea .label .in{outline:none}
   #printArea.guides .label{border:.2mm dashed #888}
   #printArea.roll .label{break-after:page}
 }
@@ -118,8 +120,10 @@ td input[type=text]{width:100%;min-width:120px;text-align:center}
         <option value="classic">كلاسيك</option><option value="price">السعر بخط كبير</option>
         <option value="compact">مدمج (سطر واحد)</option><option value="barcode">باركود فقط</option>
         <option value="custom">تصميم مخصص</option></select></label>
-      <label class="f">عرض الملصق (مم)<input type="number" id="w" value="38" min="20" max="200" step="0.5"></label>
-      <label class="f">ارتفاع الملصق (مم)<input type="number" id="h" value="25" min="15" max="200" step="0.5"></label>
+      <label class="f">عرض الملصق (سم)<input type="number" id="w" value="3.8" min="2" max="20" step="0.1"></label>
+      <label class="f">ارتفاع الملصق (سم)<input type="number" id="h" value="2.5" min="1.5" max="20" step="0.1"></label>
+      <label class="f">المارجن (مم) - الفراغ حوالين الملصق<input type="number" id="mg" value="0" min="0" max="20" step="0.1"></label>
+      <label class="f">البادنج (مم) - الفراغ جوه الملصق<input type="number" id="pd" value="1" min="0" max="20" step="0.1"></label>
       <label class="f">نوع الباركود<select id="fmt"><option>CODE128</option><option>CODE39</option></select></label>
       <label class="f">سمك الخطوط<select id="bw"><option value="1">رفيع</option><option value="1.5" selected>متوسط</option><option value="2">سميك</option></select></label>
     </div>
@@ -163,8 +167,10 @@ td input[type=text]{width:100%;min-width:120px;text-align:center}
 const $ = id => document.getElementById(id);
 const KEY = 'bcp_v2';
 const DEF = ['SKU Code','Style','Product','Segment','Color / Print','Age','Qty','Selling Price (EGP)','Expected Sales (EGP)'];
-const SET = ['w','h','fmt','bw','tpl'];
+const SET = ['w','h','mg','pd','fmt','bw','tpl'];
 let rows = [], headers = [], map = {}, sel = [], els = [], tmr, rt;
+const W = () => (parseFloat($('w').value) || 3.8) * 10, H = () => (parseFloat($('h').value) || 2.5) * 10;
+const MG = () => Math.max(0, parseFloat($('mg').value) || 0), PD = () => Math.max(0, parseFloat($('pd').value) || 0);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 function detect() {
@@ -178,7 +184,7 @@ function save() {
   clearTimeout(tmr);
   tmr = setTimeout(() => {
     try {
-      const s = {}; SET.forEach(k => s[k] = $(k).value);
+      const s = {}; SET.forEach(k => s[k] = $(k).value); s.u = 'cm';
       localStorage.setItem(KEY, JSON.stringify({ rows, headers, sel, els, s }));
       $('saved').textContent = 'تم الحفظ تلقائيًا في هذا المتصفح';
     } catch (e) { $('saved').textContent = 'تعذّر الحفظ (التخزين ممتلئ أو معطّل)'; }
@@ -346,10 +352,11 @@ function fill(v, r) {
 }
 function makeLabel(r) {
   const d = document.createElement('div');
-  d.className = 'label'; d.dir = 'auto'; d.style.cssText = `width:${+$('w').value || 38}mm;height:${+$('h').value || 25}mm`;
+  d.className = 'label'; d.dir = 'auto'; d.style.cssText = `width:${W()}mm;height:${H()}mm;padding:${MG()}mm`;
+  const inn = document.createElement('div'); inn.className = 'in'; inn.style.padding = PD() + 'mm'; d.appendChild(inn);
   const c = code(r);
   const bcOf = e => {
-    const b = document.createElement('div'); b.className = 'bc'; b.innerHTML = '<svg></svg>'; d.appendChild(b);
+    const b = document.createElement('div'); b.className = 'bc'; b.innerHTML = '<svg></svg>'; inn.appendChild(b);
     if (!c) { b.innerHTML = '<div class="ln" style="margin:auto;color:#999;font-size:8pt">أدخل كود SKU</div>'; return; }
     const s = b.firstChild;
     try {
@@ -360,7 +367,7 @@ function makeLabel(r) {
       if (e.text !== false) {
         const t = document.createElement('div'); t.className = 'ln';
         t.style.cssText = 'text-align:center;font-size:7pt;letter-spacing:.3mm;font-family:monospace;margin-top:.5mm';
-        t.textContent = c; d.appendChild(t);
+        t.textContent = c; inn.appendChild(t);
       }
     } catch (x) { b.innerHTML = `<div class="ln" style="margin:auto;color:#b00;font-size:8pt">كود غير صالح لهذا النوع: ${esc(c)}</div>`; }
   };
@@ -387,7 +394,7 @@ function makeLabel(r) {
         x.l.style.minWidth = '0';
         row.appendChild(x.l);
       });
-      d.appendChild(row);
+      inn.appendChild(row);
     }
     g.items.filter(e => e.t === 'barcode').forEach(bcOf);
   });
@@ -436,7 +443,7 @@ $('area').addEventListener('click', e => {
 function showLens(i) {
   const L = $('lens'); L.innerHTML = '';
   const lb = makeLabel(rows[i]);
-  const wpx = (+$('w').value || 38) * 3.7795, hpx = (+$('h').value || 25) * 3.7795;
+  const wpx = W() * 3.7795, hpx = H() * 3.7795;
   lb.style.zoom = Math.min(Math.min(innerWidth * .8, 900) / wpx, innerHeight * .8 / hpx);
   L.appendChild(lb); L.classList.add('on');
 }
@@ -450,11 +457,11 @@ $('lens').addEventListener('contextmenu', e => { e.preventDefault(); closeLens()
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLens(); });
 $('pAll').onclick = () => { sel = sel.map(() => true); render(); save(); };
 $('pNone').onclick = () => { sel = sel.map(() => false); render(); save(); };
-['w', 'h', 'fmt', 'bw'].forEach(id => $(id).addEventListener('input', () => { render(); save(); }));
+['w', 'h', 'mg', 'pd', 'fmt', 'bw'].forEach(id => $(id).addEventListener('input', () => { render(); save(); }));
 
 /* ---------- الطباعة والتحميل ---------- */
 $('print').onclick = () => {
-  const pa = $('printArea'), w = +$('w').value || 38, h = +$('h').value || 25;
+  const pa = $('printArea'), w = W(), h = H();
   pa.innerHTML = '';
   rows.forEach((r, i) => { if (printable(i)) for (let k = 0; k < qty(i); k++) pa.appendChild(makeLabel(r)); });
   if (!pa.children.length) return alert('حدد ملصقًا واحدًا على الأقل، وتأكد من كود SKU وعمود Qty.');
@@ -490,6 +497,8 @@ drop.addEventListener('drop', e => e.dataTransfer.files[0] && load(e.dataTransfe
     if (!d || !d.rows || !d.headers) return;
     rows = d.rows; headers = d.headers; sel = d.sel || rows.map(() => true); els = norm(d.els || []);
     Object.entries(d.s || {}).forEach(([k, v]) => { const e = $(k); if (e) e.value = v; });
+    // الإعدادات القديمة كانت بالمليمتر: حوّلها لسنتيمتر مرة واحدة
+    if (d.s && d.s.w != null && d.s.u !== 'cm') ['w', 'h'].forEach(k => { const v = parseFloat($(k).value); if (!isNaN(v)) $(k).value = +(v / 10).toFixed(2); });
     // تحويل التصاميم القديمة المحفوظة ("Product: {Product}") للشكل الجديد بعنوان قابل للإخفاء
     els.forEach(e => {
       if (e.t !== 'text' || e.label) return;
