@@ -118,8 +118,8 @@ td input[type=text]{width:100%;min-width:120px;text-align:center}
         <option value="classic">كلاسيك</option><option value="price">السعر بخط كبير</option>
         <option value="compact">مدمج (سطر واحد)</option><option value="barcode">باركود فقط</option>
         <option value="custom">تصميم مخصص</option></select></label>
-      <label class="f">عرض الملصق (سم)<input type="number" id="w" value="3.8" min="2" max="20" step="0.1"></label>
-      <label class="f">ارتفاع الملصق (سم)<input type="number" id="h" value="2.5" min="1.5" max="20" step="0.1"></label>
+      <label class="f">عرض الملصق (مم)<input type="number" id="w" value="50" min="20" max="200"></label>
+      <label class="f">ارتفاع الملصق (مم)<input type="number" id="h" value="30" min="15" max="200"></label>
       <label class="f">نوع الباركود<select id="fmt"><option>CODE128</option><option>CODE39</option></select></label>
       <label class="f">سمك الخطوط<select id="bw"><option value="1">رفيع</option><option value="1.5" selected>متوسط</option><option value="2">سميك</option></select></label>
     </div>
@@ -161,8 +161,6 @@ td input[type=text]{width:100%;min-width:120px;text-align:center}
 
 <script>
 const $ = id => document.getElementById(id);
-// الأبعاد بتتدخل بالسنتي وبتتحول لمم داخليًا
-const W = () => (+$('w').value || 3.8) * 10, H = () => (+$('h').value || 2.5) * 10;
 const KEY = 'bcp_v2';
 const DEF = ['SKU Code','Style','Product','Segment','Color / Print','Age','Qty','Selling Price (EGP)','Expected Sales (EGP)'];
 const SET = ['w','h','fmt','bw','tpl'];
@@ -181,7 +179,7 @@ function save() {
   tmr = setTimeout(() => {
     try {
       const s = {}; SET.forEach(k => s[k] = $(k).value);
-      localStorage.setItem(KEY, JSON.stringify({ rows, headers, sel, els, s, u: 'cm' }));
+      localStorage.setItem(KEY, JSON.stringify({ rows, headers, sel, els, s }));
       $('saved').textContent = 'تم الحفظ تلقائيًا في هذا المتصفح';
     } catch (e) { $('saved').textContent = 'تعذّر الحفظ (التخزين ممتلئ أو معطّل)'; }
   }, 250);
@@ -203,6 +201,8 @@ function preset(n) {
     compact: [T(j(f('product'), f('style'), f('color'), f('age')), 7), B],
     barcode: [B]
   };
+  // قالب "كل البيانات" محتاج ارتفاع أكبر عشان كل السطور تظهر
+  if (n === 'all') $('h').value = Math.max(30, Math.ceil((headers.length - 1) * 3) + 16);
   return norm((P[n] || P.classic).filter(Boolean));
 }
 const nextRow = () => els.reduce((m, e) => Math.max(m, e.row || 0), 0) + 1;
@@ -340,7 +340,7 @@ function fill(v, r) {
 }
 function makeLabel(r) {
   const d = document.createElement('div');
-  d.className = 'label'; d.dir = 'auto'; d.style.cssText = `width:${W()}mm;height:${H()}mm`;
+  d.className = 'label'; d.dir = 'auto'; d.style.cssText = `width:${+$('w').value || 50}mm;height:${+$('h').value || 30}mm`;
   const c = code(r);
   const bcOf = e => {
     const b = document.createElement('div'); b.className = 'bc'; b.innerHTML = '<svg></svg>'; d.appendChild(b);
@@ -430,7 +430,7 @@ $('area').addEventListener('click', e => {
 function showLens(i) {
   const L = $('lens'); L.innerHTML = '';
   const lb = makeLabel(rows[i]);
-  const wpx = W() * 3.7795, hpx = H() * 3.7795;
+  const wpx = (+$('w').value || 50) * 3.7795, hpx = (+$('h').value || 30) * 3.7795;
   lb.style.zoom = Math.min(Math.min(innerWidth * .8, 900) / wpx, innerHeight * .8 / hpx);
   L.appendChild(lb); L.classList.add('on');
 }
@@ -448,7 +448,7 @@ $('pNone').onclick = () => { sel = sel.map(() => false); render(); save(); };
 
 /* ---------- الطباعة والتحميل ---------- */
 $('print').onclick = () => {
-  const pa = $('printArea'), w = W(), h = H();
+  const pa = $('printArea'), w = +$('w').value || 50, h = +$('h').value || 30;
   pa.innerHTML = '';
   rows.forEach((r, i) => { if (printable(i)) for (let k = 0; k < qty(i); k++) pa.appendChild(makeLabel(r)); });
   if (!pa.children.length) return alert('حدد ملصقًا واحدًا على الأقل، وتأكد من كود SKU وعمود Qty.');
@@ -484,8 +484,6 @@ drop.addEventListener('drop', e => e.dataTransfer.files[0] && load(e.dataTransfe
     if (!d || !d.rows || !d.headers) return;
     rows = d.rows; headers = d.headers; sel = d.sel || rows.map(() => true); els = norm(d.els || []);
     Object.entries(d.s || {}).forEach(([k, v]) => { const e = $(k); if (e) e.value = v; });
-    // بيانات محفوظة قبل التحويل للسنتي كانت بالمم
-    if (d.u !== 'cm') { $('w').value = (+$('w').value || 50) / 10; $('h').value = (+$('h').value || 30) / 10; }
     // تحويل التصاميم القديمة المحفوظة ("Product: {Product}") للشكل الجديد بعنوان قابل للإخفاء
     els.forEach(e => {
       if (e.t !== 'text' || e.label) return;
