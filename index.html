@@ -88,16 +88,16 @@ td input[type=text]{width:100%;min-width:120px;text-align:center}
 <body>
 <div class="app">
   <h1>طباعة الباركود</h1>
-  <p class="sub">ارفع ملف أو أضف الأصناف يدويًا، صمّم الملصق، راجع المعاينة، واطبع. بياناتك بتتحفظ تلقائيًا في المتصفح.</p>
+  <p class="sub">ارفع ملف أو أكتر، أو أضف الأصناف يدويًا، صمّم الملصق، راجع المعاينة، واطبع. بياناتك بتتحفظ تلقائيًا في المتصفح.</p>
 
   <div class="card">
     <h2>1. ابدأ</h2>
     <div class="drop" id="drop">
       <div class="bar" style="justify-content:center">
-        <label class="btn">رفع ملف Excel / CSV / JSON<input type="file" id="file" accept=".xlsx,.xls,.csv,.json" hidden></label>
+        <label class="btn">رفع ملف أو أكتر (Excel / CSV / JSON)<input type="file" id="file" accept=".xlsx,.xls,.csv,.json" multiple hidden></label>
         <button class="alt" id="manual">إدخال يدوي بدون ملف</button>
       </div>
-      <p style="margin:10px 0 0">أو اسحب الملف وأفلته هنا</p>
+      <p style="margin:10px 0 0">أو اسحب ملف أو أكتر وأفلتهم هنا</p>
     </div>
   </div>
 
@@ -105,6 +105,7 @@ td input[type=text]{width:100%;min-width:120px;text-align:center}
     <h2>2. الأصناف</h2>
     <div class="bar" style="margin-bottom:10px">
       <button id="add">+ إضافة صنف</button>
+      <label class="btn alt">+ إضافة ملفات<input type="file" id="file2" accept=".xlsx,.xls,.csv,.json" multiple hidden></label>
       <span class="stat">اكتب في الخانات والمعاينة بتتحدث لوحدها. اضغط Enter للانتقال للصف التالي.</span>
       <span class="stat" style="margin-inline-start:auto">الأصناف: <b id="rc">0</b></span>
     </div>
@@ -301,16 +302,30 @@ function start(fresh) {
   els = syncFields(els);
   drawTable(); drawDes(); render(); save();
 }
-async function load(file) {
-  try {
-    if (/\.json$/i.test(file.name)) { const j = JSON.parse(await file.text()); rows = Array.isArray(j) ? j : (j.rows || []); }
-    else { const wb = XLSX.read(await file.arrayBuffer()); rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' }); }
-  } catch (e) { return alert('تعذّر قراءة الملف. تأكد أنه Excel أو CSV أو JSON صحيح.'); }
-  if (!rows.length) return alert('الملف فاضي.');
-  headers = [...new Set(rows.flatMap(r => Object.keys(r)))];
+async function readFile(file) {
+  if (/\.json$/i.test(file.name)) { const j = JSON.parse(await file.text()); return Array.isArray(j) ? j : (j.rows || []); }
+  const wb = XLSX.read(await file.arrayBuffer());
+  return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
+}
+// تحميل ملف أو أكتر. append=true يضيف الأصناف على الموجود، وfalse يستبدله
+async function load(files, append) {
+  files = [...files];
+  let all = [], bad = [];
+  for (const f of files) {
+    try { const r = await readFile(f); if (r.length) all = all.concat(r); else bad.push(f.name + ' (فاضي)'); }
+    catch (e) { bad.push(f.name); }
+  }
+  if (bad.length) alert('تعذّر قراءة الملفات دي:\n' + bad.join('\n'));
+  if (!all.length) return;
+  const oldSel = append ? sel : [];
+  rows = append ? rows.concat(all) : all;
+  // دمج الأعمدة من كل الملفات، والأعمدة الناقصة في أي صف تتملي فاضية
+  headers = [...new Set([...(append ? headers : []), ...rows.flatMap(r => Object.keys(r))])];
+  rows.forEach(r => headers.forEach(h => { if (!(h in r)) r[h] = ''; }));
   detect();
   if (!map.sku) alert('مش لاقي عمود الـ SKU. تأكد أن اسم العمود فيه كلمة SKU أو Code.');
-  sel = rows.map(() => true); start(true);
+  sel = rows.map((_, i) => i < oldSel.length ? oldSel[i] : true);
+  start(!append);
 }
 $('manual').onclick = () => {
   if (rows.length && !confirm('هيتم استبدال الأصناف الحالية. متأكد؟')) return;
@@ -504,11 +519,19 @@ $('dlj').onclick = () => {
 };
 
 /* ---------- رفع الملفات والتشغيل ---------- */
-$('file').onchange = e => e.target.files[0] && load(e.target.files[0]);
+// رفع من الخطوة 1 أو السحب: لو فيه أصناف موجودة نسأل (إضافة ولا استبدال)
+const go = fs => {
+  if (!fs.length) return;
+  const add = rows.length > 0 && confirm('فيه أصناف حالية.\nOK = إضافة الملفات عليها\nCancel = استبدالها بالملفات الجديدة');
+  load(fs, add);
+};
+$('file').onchange = e => { go(e.target.files); e.target.value = ''; };
+// زر "إضافة ملفات" في الخطوة 2: دايمًا بيضيف على الموجود
+$('file2').onchange = e => { if (e.target.files.length) load(e.target.files, true); e.target.value = ''; };
 const drop = $('drop');
 ['dragover', 'dragenter'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('on'); }));
 ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('on'); }));
-drop.addEventListener('drop', e => e.dataTransfer.files[0] && load(e.dataTransfer.files[0]));
+drop.addEventListener('drop', e => go(e.dataTransfer.files));
 
 (function init() {
   try {
