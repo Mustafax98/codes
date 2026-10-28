@@ -45,9 +45,9 @@ td input[type=text]{width:100%;min-width:120px;text-align:center}
 #des{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:8px}
 #des .el{margin-bottom:0}
 #des .el .ev{min-width:120px}
-#des .el.bcrow{grid-column:1/-1}   /* سطر الباركود ياخد العرض كله */
-#des > .stat{grid-column:1/-1}         /* رسالة "الملصق فاضي" */
-@media(max-width:700px){#des{grid-template-columns:1fr}}  /* على الموبايل سطر تحت سطر */
+#des .el.bcrow{grid-column:1/-1} /* سطر الباركود ياخد العرض كله */
+#des > .stat{grid-column:1/-1} /* رسالة "الملصق فاضي" */
+@media(max-width:700px){#des{grid-template-columns:1fr}} /* على الموبايل سطر تحت سطر */
 .ctl{display:flex;gap:4px;margin-inline-start:auto}
 #paper{background:#e8e3e8;border-radius:8px;padding:16px;overflow:auto;min-height:160px}
 #area{display:flex;flex-wrap:wrap;gap:2mm;align-content:flex-start}
@@ -74,101 +74,101 @@ td input[type=text]{width:100%;min-width:120px;text-align:center}
 #sample{display:flex;justify-content:center;zoom:1.6}
 #sample .label{border:1px solid #9a8fa0;box-shadow:0 1px 4px rgba(0,0,0,.15);text-align:start}
 @media print{
-  body{background:#fff}
-  .app,#lens{display:none!important}
-  #printArea{display:flex;flex-wrap:wrap;align-content:flex-start}
-  #printArea.sheet{gap:2mm}
-  #printArea .label{border:none}
-  #printArea .label .in{outline:none}
-  #printArea.guides .label{border:.2mm dashed #888}
-  #printArea.roll .label{break-after:page}
+body{background:#fff}
+.app,#lens{display:none!important}
+#printArea{display:flex;flex-wrap:wrap;align-content:flex-start}
+#printArea.sheet{gap:2mm}
+#printArea .label{border:none}
+#printArea .label .in{outline:none}
+#printArea.guides .label{border:.2mm dashed #888}
+#printArea.roll .label{break-after:page}
 }
 </style>
 </head>
 <body>
 <div class="app">
-  <h1>طباعة الباركود</h1>
-  <p class="sub">ارفع ملف أو أكتر، أو أضف الأصناف يدويًا، صمّم الملصق، راجع المعاينة، واطبع. بياناتك بتتحفظ تلقائيًا في المتصفح.</p>
+<h1>طباعة الباركود</h1>
+<p class="sub">ارفع ملف أو أكتر، أو أضف الأصناف يدويًا، صمّم الملصق، راجع المعاينة، واطبع. بياناتك بتتحفظ تلقائيًا في المتصفح.</p>
 
-  <div class="card">
-    <h2>1. ابدأ</h2>
-    <div class="drop" id="drop">
-      <div class="bar" style="justify-content:center">
-        <label class="btn">رفع ملف أو أكتر (Excel / CSV / JSON)<input type="file" id="file" accept=".xlsx,.xls,.csv,.json" multiple hidden></label>
-        <button class="alt" id="manual">إدخال يدوي بدون ملف</button>
-      </div>
-      <p style="margin:10px 0 0">أو اسحب ملف أو أكتر وأفلتهم هنا</p>
-    </div>
-  </div>
+<div class="card">
+<h2>1. ابدأ</h2>
+<div class="drop" id="drop">
+<div class="bar" style="justify-content:center">
+<label class="btn">رفع ملف أو أكتر (Excel / CSV / JSON)<input type="file" id="file" accept=".xlsx,.xls,.csv,.json" multiple hidden></label>
+<button class="alt" id="manual">إدخال يدوي بدون ملف</button>
+</div>
+<p style="margin:10px 0 0">أو اسحب ملف أو أكتر وأفلتهم هنا</p>
+</div>
+</div>
 
-  <div class="card" id="dataCard" hidden>
-    <h2>2. الأصناف</h2>
-    <div class="bar" style="margin-bottom:10px">
-      <button id="add">+ إضافة صنف</button>
-      <label class="btn alt">+ إضافة ملفات<input type="file" id="file2" accept=".xlsx,.xls,.csv,.json" multiple hidden></label>
-      <button class="alt" id="delAll" style="color:#d62f2f">مسح كل الأصناف</button>
-      <span class="stat">اكتب في الخانات والمعاينة بتتحدث لوحدها. اضغط Enter للانتقال للصف التالي.</span>
-      <span class="stat" style="margin-inline-start:auto">الأصناف: <b id="rc">0</b></span>
-    </div>
-    <div class="tw" id="tw"><table id="tbl"></table></div>
-      </div>
+<div class="card" id="dataCard" hidden>
+<h2>2. الأصناف</h2>
+<div class="bar" style="margin-bottom:10px">
+<button id="add">+ إضافة صنف</button>
+<label class="btn alt">+ إضافة ملفات<input type="file" id="file2" accept=".xlsx,.xls,.csv,.json" multiple hidden></label>
+<button class="alt" id="delAll" style="color:#d62f2f">مسح كل الأصناف</button>
+<span class="stat">اكتب في الخانات والمعاينة بتتحدث لوحدها. اضغط Enter للانتقال للصف التالي.</span>
+<span class="stat" style="margin-inline-start:auto">الأصناف: <b id="rc">0</b></span>
+</div>
+<div class="tw" id="tw"><table id="tbl"></table></div>
+</div>
 
-  <div class="card" id="setCard" hidden>
-    <h2>3. الطباعة وتصميم الملصق</h2>
-    <div class="split"><div class="main">
-    <div class="grid">
-      <label class="f">شكل الملصق<select id="tpl">
-        <option value="all">كل البيانات</option>
-        <option value="classic">كلاسيك</option><option value="price">السعر بخط كبير</option>
-        <option value="compact">مدمج (سطر واحد)</option><option value="barcode">باركود فقط</option>
-        <option value="custom">تصميم مخصص</option></select></label>
-      <label class="f">عرض الملصق (سم)<input type="number" id="w" value="3.8" min="2" max="20" step="0.1"></label>
-      <label class="f">ارتفاع الملصق (سم)<input type="number" id="h" value="2.5" min="1.5" max="20" step="0.1"></label>
-      <label class="f">مارجن فوق (مم)<input type="number" id="mt" value="0" min="0" max="20" step="0.1"></label>
-      <label class="f">مارجن يمين (مم)<input type="number" id="mr" value="0" min="0" max="20" step="0.1"></label>
-      <label class="f">مارجن تحت (مم)<input type="number" id="mb" value="0" min="0" max="20" step="0.1"></label>
-      <label class="f">مارجن يسار (مم)<input type="number" id="ml" value="0" min="0" max="20" step="0.1"></label>
-      <label class="f">بادنج فوق (مم)<input type="number" id="pt" value="1" min="0" max="20" step="0.1"></label>
-      <label class="f">بادنج يمين (مم)<input type="number" id="pr" value="1" min="0" max="20" step="0.1"></label>
-      <label class="f">بادنج تحت (مم)<input type="number" id="pb" value="1" min="0" max="20" step="0.1"></label>
-      <label class="f">بادنج يسار (مم)<input type="number" id="pl" value="1" min="0" max="20" step="0.1"></label>
-      <label class="f">المسافة بين السطور (مم)<input type="number" id="ls" value="0.3" min="0" max="20" step="0.1"></label>
-      <label class="f">وزن الخط<select id="fw"><option value="b" selected>Bold لكل السطور</option><option value="n">حسب خانة Bold لكل سطر</option></select></label>
-      <label class="f">نوع الباركود<select id="fmt"><option>CODE128</option><option>CODE39</option></select></label>
-      <label class="f">سمك الخطوط<select id="bw"><option value="1">رفيع</option><option value="1.5">متوسط</option><option value="2" selected>سميك</option></select></label>
-    </div>
-    <h2 style="margin:18px 0 8px">مصمم الملصق (أي تعديل يحوّله لتصميم مخصص)</h2>
-    <div id="des"></div>
-    <div class="bar">
-      <button class="alt" id="addTxt">+ سطر نص</button>
-      <button class="alt" id="addBc">+ باركود</button>
-      <button class="alt" id="lblOn">إظهار كل العناوين</button>
-      <button class="alt" id="lblOff">إخفاء كل العناوين</button>
-      <span class="stat">اكتب نصًا عاديًا أو أدخل حقولًا من القائمة، مثال: <bdi>{Product} · {Style}</bdi></span>
-    </div>
-    </div>
-    <div class="side">
-      <h3>نموذج للتصميم</h3>
-      <p class="hint">بالحجم الحقيقي تقريبًا (مكبّر) · بيتحدث مع كل تعديل · بيانات أول صنف</p>
-      <div id="sample"></div>
-    </div>
-    </div>
-  </div>
+<div class="card" id="setCard" hidden>
+<h2>3. الطباعة وتصميم الملصق</h2>
+<div class="split"><div class="main">
+<div class="grid">
+<label class="f">شكل الملصق<select id="tpl">
+<option value="all">كل البيانات</option>
+<option value="classic">كلاسيك</option><option value="price">السعر بخط كبير</option>
+<option value="compact">مدمج (سطر واحد)</option><option value="barcode">باركود فقط</option>
+<option value="custom">تصميم مخصص</option></select></label>
+<label class="f">عرض الملصق (سم)<input type="number" id="w" value="3.8" min="2" max="20" step="0.1"></label>
+<label class="f">ارتفاع الملصق (سم)<input type="number" id="h" value="2.5" min="1.5" max="20" step="0.1"></label>
+<label class="f">مارجن فوق (مم)<input type="number" id="mt" value="0" min="0" max="20" step="0.1"></label>
+<label class="f">مارجن يمين (مم)<input type="number" id="mr" value="0" min="0" max="20" step="0.1"></label>
+<label class="f">مارجن تحت (مم)<input type="number" id="mb" value="0" min="0" max="20" step="0.1"></label>
+<label class="f">مارجن يسار (مم)<input type="number" id="ml" value="0" min="0" max="20" step="0.1"></label>
+<label class="f">بادنج فوق (مم)<input type="number" id="pt" value="1" min="0" max="20" step="0.1"></label>
+<label class="f">بادنج يمين (مم)<input type="number" id="pr" value="1" min="0" max="20" step="0.1"></label>
+<label class="f">بادنج تحت (مم)<input type="number" id="pb" value="1" min="0" max="20" step="0.1"></label>
+<label class="f">بادنج يسار (مم)<input type="number" id="pl" value="1" min="0" max="20" step="0.1"></label>
+<label class="f">المسافة بين السطور (مم)<input type="number" id="ls" value="0.3" min="0" max="20" step="0.1"></label>
+<label class="f">وزن الخط<select id="fw"><option value="b" selected>Bold لكل السطور</option><option value="n">حسب خانة Bold لكل سطر</option></select></label>
+<label class="f">نوع الباركود<select id="fmt"><option>CODE128</option><option>CODE39</option></select></label>
+<label class="f">سمك الخطوط<select id="bw"><option value="1">رفيع</option><option value="1.5">متوسط</option><option value="2" selected>سميك</option></select></label>
+</div>
+<h2 style="margin:18px 0 8px">مصمم الملصق (أي تعديل يحوّله لتصميم مخصص)</h2>
+<div id="des"></div>
+<div class="bar">
+<button class="alt" id="addTxt">+ سطر نص</button>
+<button class="alt" id="addBc">+ باركود</button>
+<button class="alt" id="lblOn">إظهار كل العناوين</button>
+<button class="alt" id="lblOff">إخفاء كل العناوين</button>
+<span class="stat">اكتب نصًا عاديًا أو أدخل حقولًا من القائمة، مثال: <bdi>{Product} · {Style}</bdi></span>
+</div>
+</div>
+<div class="side">
+<h3>نموذج للتصميم</h3>
+<p class="hint">بالحجم الحقيقي تقريبًا (مكبّر) · بيتحدث مع كل تعديل · بيانات أول صنف</p>
+<div id="sample"></div>
+</div>
+</div>
+</div>
 
-  <div class="card" id="prevCard" hidden>
-    <h2>4. المعاينة قبل الطباعة</h2>
-    <div class="bar" style="margin-bottom:12px">
-      <button id="print">طباعة المحدد</button>
-      <button class="alt" id="pAll">تحديد الكل</button>
-      <button class="alt" id="pNone">إلغاء التحديد</button>
-      <button class="alt" id="dlx">تحميل Excel</button>
-      <button class="alt" id="dlj">تحميل JSON</button>
-      <button class="alt" id="clr">مسح البيانات المحفوظة</button>
-      <span class="stat" style="margin-inline-start:auto">الملصقات للطباعة: <b id="count">0</b></span>
-    </div>
-    <p class="stat" style="margin:0 0 10px">اضغط على الملصق لتحديده أو إلغائه، وكليك يمين عليه لتكبيره. عدد النسخ المطبوعة = عمود Qty. <span id="saved"></span></p>
-    <div id="paper"><div id="area"></div></div>
-  </div>
+<div class="card" id="prevCard" hidden>
+<h2>4. المعاينة قبل الطباعة</h2>
+<div class="bar" style="margin-bottom:12px">
+<button id="print">طباعة المحدد</button>
+<button class="alt" id="pAll">تحديد الكل</button>
+<button class="alt" id="pNone">إلغاء التحديد</button>
+<button class="alt" id="dlx">تحميل Excel</button>
+<button class="alt" id="dlj">تحميل JSON</button>
+<button class="alt" id="clr">مسح البيانات المحفوظة</button>
+<span class="stat" style="margin-inline-start:auto">الملصقات للطباعة: <b id="count">0</b></span>
+</div>
+<p class="stat" style="margin:0 0 10px">اضغط على الملصق لتحديده أو إلغائه، وكليك يمين عليه لتكبيره. عدد النسخ المطبوعة = عمود Qty. <span id="saved"></span></p>
+<div id="paper"><div id="area"></div></div>
+</div>
 </div>
 <div id="lens" title="اضغط للإغلاق"></div>
 <div id="printArea"></div>
@@ -187,109 +187,109 @@ const FONTS = ['Arial', 'Tahoma', 'Verdana', 'Times New Roman', 'Courier New', '
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 function detect() {
-  const f = re => headers.find(h => re.test(h)) || '';
-  map = { sku: f(/sku|code|كود|باركود/i), product: f(/product|منتج|صنف/i), style: f(/style|ستايل|موديل/i),
-    color: f(/color|print|لون/i), age: f(/age|عمر|مقاس|size/i), price: f(/price|سعر/i), qty: f(/qty|quantity|كمية|عدد/i) };
+const f = re => headers.find(h => re.test(h)) || '';
+map = { sku: f(/sku|code|كود|باركود/i), product: f(/product|منتج|صنف/i), style: f(/style|ستايل|موديل/i),
+color: f(/color|print|لون/i), age: f(/age|عمر|مقاس|size/i), price: f(/price|سعر/i), qty: f(/qty|quantity|كمية|عدد/i) };
 }
 
 /* ---------- التخزين المحلي ---------- */
 function save() {
-  clearTimeout(tmr);
-  tmr = setTimeout(() => {
-    try {
-      const s = {}; SET.forEach(k => s[k] = $(k).value); s.u = 'cm';
-      localStorage.setItem(KEY, JSON.stringify({ rows, headers, sel, els, s }));
-      $('saved').textContent = 'تم الحفظ تلقائيًا في هذا المتصفح';
-    } catch (e) { $('saved').textContent = 'تعذّر الحفظ (التخزين ممتلئ أو معطّل)'; }
-  }, 250);
+clearTimeout(tmr);
+tmr = setTimeout(() => {
+try {
+const s = {}; SET.forEach(k => s[k] = $(k).value); s.u = 'cm';
+localStorage.setItem(KEY, JSON.stringify({ rows, headers, sel, els, s }));
+$('saved').textContent = 'تم الحفظ تلقائيًا في هذا المتصفح';
+} catch (e) { $('saved').textContent = 'تعذّر الحفظ (التخزين ممتلئ أو معطّل)'; }
+}, 250);
 }
 $('clr').onclick = () => {
-  if (confirm('هيتم مسح كل الأصناف والتصميم المحفوظ من المتصفح. متأكد؟')) { localStorage.removeItem(KEY); location.reload(); }
+if (confirm('هيتم مسح كل الأصناف والتصميم المحفوظ من المتصفح. متأكد؟')) { localStorage.removeItem(KEY); location.reload(); }
 };
 
 /* ---------- قوالب الملصق ---------- */
 function preset(n) {
-  const f = k => map[k] ? `{${map[k]}}` : '';
-  const j = (...a) => a.filter(Boolean).join(' · ');
-  const T = (v, size, bold) => v ? { t: 'text', v, size, bold: !!bold, align: 'center' } : null;
-  const B = { t: 'barcode' }, BC = [B, T(f('sku'), 7)];
-  const P = {
-    all: headers.filter(h => h !== map.sku).map(h => ({ ...T(`{${h}}`, 6.5), label: h })).concat(BC),
-    classic: [T(j(f('product'), f('style')), 9, 1), T(j(f('color'), f('age')), 7.5), T(f('price'), 10, 1), ...BC],
-    price: [T(f('price'), 16, 1), T(j(f('product'), f('style')), 8), ...BC],
-    compact: [T(j(f('product'), f('style'), f('color'), f('age')), 7), ...BC],
-    barcode: BC
-  };
-  return syncFields(norm((P[n] || P.classic).filter(Boolean)));
+const f = k => map[k] ? `{${map[k]}}` : '';
+const j = (...a) => a.filter(Boolean).join(' · ');
+const T = (v, size, bold) => v ? { t: 'text', v, size, bold: !!bold, align: 'center' } : null;
+const B = { t: 'barcode' }, BC = [B, T(f('sku'), 7)];
+const P = {
+all: headers.filter(h => h !== map.sku).map(h => ({ ...T(`{${h}}`, 6.5), label: h })).concat(BC),
+classic: [T(j(f('product'), f('style')), 9, 1), T(j(f('color'), f('age')), 7.5), T(f('price'), 10, 1), ...BC],
+price: [T(f('price'), 16, 1), T(j(f('product'), f('style')), 8), ...BC],
+compact: [T(j(f('product'), f('style'), f('color'), f('age')), 7), ...BC],
+barcode: BC
+};
+return syncFields(norm((P[n] || P.classic).filter(Boolean)));
 }
 // أي عمود في الجدول مش موجود في التصميم يتضاف كسطر مخفي (فعّله بزر "إظهار")
 function syncFields(a) {
-  const mx = () => a.reduce((m, e) => Math.max(m, e.row || 0), 0) + 1;
-  headers.filter(h => h !== map.sku && !a.some(e => e.t === 'text' && String(e.v).includes(`{${h}}`)))
-    .forEach(h => a.push({ t: 'text', v: `{${h}}`, size: 6.5, bold: false, align: 'center', row: mx(), label: h, show: false }));
-  return a;
+const mx = () => a.reduce((m, e) => Math.max(m, e.row || 0), 0) + 1;
+headers.filter(h => h !== map.sku && !a.some(e => e.t === 'text' && String(e.v).includes(`{${h}}`)))
+.forEach(h => a.push({ t: 'text', v: `{${h}}`, size: 6.5, bold: false, align: 'center', row: mx(), label: h, show: false }));
+return a;
 }
 // تصاميم قديمة: رقم الباركود كان جزء من الباركود، دلوقتي سطر نص منفصل
 function migrate(a) {
-  for (let i = 0; i < a.length; i++) {
-    const e = a[i];
-    if (e.t !== 'barcode' || !('text' in e)) continue;
-    const had = e.text !== false; delete e.text;
-    if (!had || !map.sku) continue;
-    const r = e.row;
-    a.forEach(x => { if (x.row > r) x.row++; });
-    a.splice(i + 1, 0, { t: 'text', v: `{${map.sku}}`, size: 7, bold: false, align: 'center', row: r + 1, show: e.show });
-  }
-  return a;
+for (let i = 0; i < a.length; i++) {
+const e = a[i];
+if (e.t !== 'barcode' || !('text' in e)) continue;
+const had = e.text !== false; delete e.text;
+if (!had || !map.sku) continue;
+const r = e.row;
+a.forEach(x => { if (x.row > r) x.row++; });
+a.splice(i + 1, 0, { t: 'text', v: `{${map.sku}}`, size: 7, bold: false, align: 'center', row: r + 1, show: e.show });
+}
+return a;
 }
 const nextRow = () => els.reduce((m, e) => Math.max(m, e.row || 0), 0) + 1;
 function norm(a) {
-  let n = 0;
-  a.forEach((e, i) => {
-    if (e.row == null) {
-      e.row = ++n; const nx = a[i + 1];
-      if (e.half && nx && nx.t === 'text' && nx.row == null) { nx.row = e.row; nx.half = true; } // تحويل التصاميم القديمة
-    } else n = Math.max(n, e.row);
-  });
-  return a;
+let n = 0;
+a.forEach((e, i) => {
+if (e.row == null) {
+e.row = ++n; const nx = a[i + 1];
+if (e.half && nx && nx.t === 'text' && nx.row == null) { nx.row = e.row; nx.half = true; } // تحويل التصاميم القديمة
+} else n = Math.max(n, e.row);
+});
+return a;
 }
 const custom = () => $('tpl').value = 'custom';
 
 function drawDes() {
-  const ctl = '<span class="ctl"><button class="alt mini" data-a="up">↑</button><button class="alt mini" data-a="dn">↓</button><button class="alt mini" data-a="del">✕</button></span>';
-  const shw = e => `<label class="chk shw"><input type="checkbox" class="esh" ${e.show === false ? '' : 'checked'}> إظهار</label>`;
-  const al = (e, v, t) => `<option value="${v}" ${e.align === v ? 'selected' : ''}>${t}</option>`;
-  $('des').innerHTML = els.map((e, i) => e.t === 'barcode'
-    ? `<div class="el bcrow${e.show === false ? ' off' : ''}" data-i="${i}">${shw(e)}<b>الباركود</b><label class="chk">السطر <input type="number" class="er" min="1" step="1" value="${e.row}" style="width:58px"></label>${ctl}</div>`
-    : `<div class="el${e.show === false ? ' off' : ''}" data-i="${i}">${shw(e)}<input type="text" class="ev" value="${esc(e.v)}" placeholder="نص أو حقل"><select class="ins"><option value="">+ حقل</option>${headers.map(h => `<option>${esc(h)}</option>`).join('')}</select><label class="chk">السطر <input type="number" class="er" min="1" step="1" value="${e.row}" style="width:58px"></label><input type="number" class="es" min="4" max="48" step="0.5" value="${e.size}" title="حجم الخط (pt)"><select class="ef" title="نوع الخط"><option value="">الخط: Arial</option>${FONTS.map(f => `<option value="${f}" ${e.font === f ? 'selected' : ''}>${f}</option>`).join('')}</select>${e.label ? `<label class="chk"><input type="checkbox" class="elb" ${e.lbl === false ? '' : 'checked'}> العنوان: <bdi>${esc(e.label)}</bdi></label>` : ''}<label class="chk"><input type="checkbox" class="eb" ${e.bold ? 'checked' : ''}> Bold</label><label class="chk"><input type="checkbox" class="ehf" ${e.half ? 'checked' : ''}> 50%</label><select class="ea">${al(e,'center','وسط')}${al(e,'right','يمين')}${al(e,'left','يسار')}</select>${ctl}</div>`
-  ).join('') || '<p class="stat">الملصق فاضي. أضف سطر نص أو باركود.</p>';
+const ctl = '<span class="ctl"><button class="alt mini" data-a="up">↑</button><button class="alt mini" data-a="dn">↓</button><button class="alt mini" data-a="del">✕</button></span>';
+const shw = e => `<label class="chk shw"><input type="checkbox" class="esh" ${e.show === false ? '' : 'checked'}> إظهار</label>`;
+const al = (e, v, t) => `<option value="${v}" ${e.align === v ? 'selected' : ''}>${t}</option>`;
+$('des').innerHTML = els.map((e, i) => e.t === 'barcode'
+? `<div class="el bcrow${e.show === false ? ' off' : ''}" data-i="${i}">${shw(e)}<b>الباركود</b><label class="chk">السطر <input type="number" class="er" min="1" step="1" value="${e.row}" style="width:58px"></label>${ctl}</div>`
+: `<div class="el${e.show === false ? ' off' : ''}" data-i="${i}">${shw(e)}<input type="text" class="ev" value="${esc(e.v)}" placeholder="نص أو حقل"><select class="ins"><option value="">+ حقل</option>${headers.map(h => `<option>${esc(h)}</option>`).join('')}</select><label class="chk">السطر <input type="number" class="er" min="1" step="1" value="${e.row}" style="width:58px"></label><input type="number" class="es" min="4" max="48" step="0.5" value="${e.size}" title="حجم الخط (pt)"><select class="ef" title="نوع الخط"><option value="">الخط: Arial</option>${FONTS.map(f => `<option value="${f}" ${e.font === f ? 'selected' : ''}>${f}</option>`).join('')}</select>${e.label ? `<label class="chk"><input type="checkbox" class="elb" ${e.lbl === false ? '' : 'checked'}> العنوان: <bdi>${esc(e.label)}</bdi></label>` : ''}<label class="chk"><input type="checkbox" class="eb" ${e.bold ? 'checked' : ''}> Bold</label><label class="chk"><input type="checkbox" class="ehf" ${e.half ? 'checked' : ''}> 50%</label><select class="ea">${al(e,'center','وسط')}${al(e,'right','يمين')}${al(e,'left','يسار')}</select>${ctl}</div>`
+).join('') || '<p class="stat">الملصق فاضي. أضف سطر نص أو باركود.</p>';
 }
 $('des').addEventListener('input', ev => {
-  const t = ev.target, box = t.closest('.el'); if (!box) return;
-  const e = els[box.dataset.i], c = t.classList;
-  if (c.contains('esh')) { e.show = t.checked; box.classList.toggle('off', !t.checked); }
-  else if (c.contains('ev')) e.v = t.value;
-  else if (c.contains('ef')) e.font = t.value;
-  else if (c.contains('es')) e.size = +t.value || 8;
-  else if (c.contains('elb')) e.lbl = t.checked;
-  else if (c.contains('eb')) e.bold = t.checked;
-  else if (c.contains('ea')) e.align = t.value;
-  else if (c.contains('ehf')) e.half = t.checked;
-  else if (c.contains('er')) e.row = Math.max(1, parseInt(t.value) || 1);
-  else if (c.contains('ins')) { if (!t.value) return; e.v += `{${t.value}}`; box.querySelector('.ev').value = e.v; t.value = ''; }
-  custom(); render(); save();
+const t = ev.target, box = t.closest('.el'); if (!box) return;
+const e = els[box.dataset.i], c = t.classList;
+if (c.contains('esh')) { e.show = t.checked; box.classList.toggle('off', !t.checked); }
+else if (c.contains('ev')) e.v = t.value;
+else if (c.contains('ef')) e.font = t.value;
+else if (c.contains('es')) e.size = +t.value || 8;
+else if (c.contains('elb')) e.lbl = t.checked;
+else if (c.contains('eb')) e.bold = t.checked;
+else if (c.contains('ea')) e.align = t.value;
+else if (c.contains('ehf')) e.half = t.checked;
+else if (c.contains('er')) e.row = Math.max(1, parseInt(t.value) || 1);
+else if (c.contains('ins')) { if (!t.value) return; e.v += `{${t.value}}`; box.querySelector('.ev').value = e.v; t.value = ''; }
+custom(); render(); save();
 });
 $('des').addEventListener('click', ev => {
-  const a = ev.target.dataset.a; if (!a) return;
-  const i = +ev.target.closest('.el').dataset.i;
-  if (a === 'del') els.splice(i, 1);
-  else { const j = a === 'up' ? i - 1 : i + 1; if (j < 0 || j >= els.length) return; [els[i], els[j]] = [els[j], els[i]]; }
-  custom(); drawDes(); render(); save();
+const a = ev.target.dataset.a; if (!a) return;
+const i = +ev.target.closest('.el').dataset.i;
+if (a === 'del') els.splice(i, 1);
+else { const j = a === 'up' ? i - 1 : i + 1; if (j < 0 || j >= els.length) return; [els[i], els[j]] = [els[j], els[i]]; }
+custom(); drawDes(); render(); save();
 });
 $('addTxt').onclick = () => { els.push({ t: 'text', v: '', size: 8, bold: false, align: 'center', row: nextRow() }); custom(); drawDes(); render(); save(); };
 $('addBc').onclick = () => {
-  if (els.some(e => e.t === 'barcode')) return alert('الملصق فيه باركود بالفعل.');
-  const r = nextRow(); els.push({ t: 'barcode', row: r }); if (map.sku) els.push({ t: 'text', v: `{${map.sku}}`, size: 7, bold: false, align: 'center', row: r + 1 }); custom(); drawDes(); render(); save();
+if (els.some(e => e.t === 'barcode')) return alert('الملصق فيه باركود بالفعل.');
+const r = nextRow(); els.push({ t: 'barcode', row: r }); if (map.sku) els.push({ t: 'text', v: `{${map.sku}}`, size: 7, bold: false, align: 'center', row: r + 1 }); custom(); drawDes(); render(); save();
 };
 const setLbl = v => { els.forEach(e => { if (e.label) e.lbl = v; }); custom(); drawDes(); render(); save(); };
 $('lblOn').onclick = () => setLbl(true);
@@ -298,199 +298,205 @@ $('tpl').onchange = () => { if ($('tpl').value !== 'custom') { els = preset($('t
 
 /* ---------- البيانات ---------- */
 function start(fresh) {
-  ['dataCard', 'setCard', 'prevCard'].forEach(i => $(i).hidden = false);
-  if (fresh && ($('tpl').value !== 'custom' || !els.length)) els = preset($('tpl').value);
-  els = syncFields(els);
-  drawTable(); drawDes(); render(); save();
+['dataCard', 'setCard', 'prevCard'].forEach(i => $(i).hidden = false);
+if (fresh && ($('tpl').value !== 'custom' || !els.length)) els = preset($('tpl').value);
+els = syncFields(els);
+drawTable(); drawDes(); render(); save();
 }
 async function readFile(file) {
-  if (/\.json$/i.test(file.name)) { const j = JSON.parse(await file.text()); return Array.isArray(j) ? j : (j.rows || []); }
-  const wb = XLSX.read(await file.arrayBuffer());
-  return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
+if (/\.json$/i.test(file.name)) { const j = JSON.parse(await file.text()); return Array.isArray(j) ? j : (j.rows || []); }
+const wb = XLSX.read(await file.arrayBuffer());
+return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
 }
 // تحميل ملف أو أكتر. append=true يضيف الأصناف على الموجود، وfalse يستبدله
 async function load(files, append) {
-  files = [...files];
-  let all = [], bad = [];
-  for (const f of files) {
-    try { const r = await readFile(f); if (r.length) all = all.concat(r); else bad.push(f.name + ' (فاضي)'); }
-    catch (e) { bad.push(f.name); }
-  }
-  if (bad.length) alert('تعذّر قراءة الملفات دي:\n' + bad.join('\n'));
-  if (!all.length) return;
-  const oldSel = append ? sel : [];
-  rows = append ? rows.concat(all) : all;
-  // دمج الأعمدة من كل الملفات، والأعمدة الناقصة في أي صف تتملي فاضية
-  headers = [...new Set([...(append ? headers : []), ...rows.flatMap(r => Object.keys(r))])];
-  rows.forEach(r => headers.forEach(h => { if (!(h in r)) r[h] = ''; }));
-  detect();
-  if (!map.sku) alert('مش لاقي عمود الـ SKU. تأكد أن اسم العمود فيه كلمة SKU أو Code.');
-  sel = rows.map((_, i) => i < oldSel.length ? oldSel[i] : true);
-  start(!append);
+files = [...files];
+let all = [], bad = [];
+for (const f of files) {
+try { const r = await readFile(f); if (r.length) all = all.concat(r); else bad.push(f.name + ' (فاضي)'); }
+catch (e) { bad.push(f.name); }
+}
+if (bad.length) alert('تعذّر قراءة الملفات دي:\n' + bad.join('\n'));
+if (!all.length) return;
+const oldSel = append ? sel : [];
+rows = append ? rows.concat(all) : all;
+// دمج الأعمدة من كل الملفات، والأعمدة الناقصة في أي صف تتملي فاضية
+headers = [...new Set([...(append ? headers : []), ...rows.flatMap(r => Object.keys(r))])];
+rows.forEach(r => headers.forEach(h => { if (!(h in r)) r[h] = ''; }));
+detect();
+if (!map.sku) alert('مش لاقي عمود الـ SKU. تأكد أن اسم العمود فيه كلمة SKU أو Code.');
+sel = rows.map((_, i) => i < oldSel.length ? oldSel[i] : true);
+start(!append);
 }
 $('manual').onclick = () => {
-  if (rows.length && !confirm('هيتم استبدال الأصناف الحالية. متأكد؟')) return;
-  headers = [...DEF]; rows = []; sel = []; detect(); start(true); addRow();
+if (rows.length && !confirm('هيتم استبدال الأصناف الحالية. متأكد؟')) return;
+headers = [...DEF]; rows = []; sel = []; detect(); start(true); addRow();
 };
 function qty(i) {
-  if (!map.qty) return 1;
-  const n = parseInt(rows[i][map.qty]); return isNaN(n) ? 1 : Math.max(0, n);
+if (!map.qty) return 1;
+const n = parseInt(rows[i][map.qty]); return isNaN(n) ? 1 : Math.max(0, n);
 }
 const hasB = () => els.some(e => e.t === 'barcode' && e.show !== false);
 const code = r => String(r[map.sku] ?? '').trim();
 function addRow(k) {
-  const r = {}; headers.forEach(h => r[h] = ''); if (map.qty) r[map.qty] = 1;
-  rows.push(r); sel.push(true);
-  drawTable(); render(); save();
-  const ins = document.querySelectorAll('#tbl tbody tr:last-child input');
-  const idx = k !== undefined ? headers.indexOf(k) : Math.max(0, headers.indexOf(map.sku));
-  if (ins[idx]) ins[idx].focus();
-  $('tw').scrollTop = 1e6;
+const r = {}; headers.forEach(h => r[h] = ''); if (map.qty) r[map.qty] = 1;
+rows.push(r); sel.push(true);
+drawTable(); render(); save();
+const ins = document.querySelectorAll('#tbl tbody tr:last-child input');
+const idx = k !== undefined ? headers.indexOf(k) : Math.max(0, headers.indexOf(map.sku));
+if (ins[idx]) ins[idx].focus();
+$('tw').scrollTop = 1e6;
 }
 $('add').onclick = () => addRow();
 $('delAll').onclick = () => {
-  if (!rows.length) return;
-  if (!confirm(`هيتم مسح كل الأصناف (${rows.length}) من الجدول. التصميم والإعدادات هتفضل زي ما هي. متأكد؟`)) return;
-  rows = []; sel = []; drawTable(); render(); save();
+if (!rows.length) return;
+if (!confirm(`هيتم مسح كل الأصناف (${rows.length}) من الجدول. التصميم والإعدادات هتفضل زي ما هي. متأكد؟`)) return;
+rows = []; sel = []; drawTable(); render(); save();
 };
 
 function drawTable() {
-  $('tbl').innerHTML = '<thead><tr>' + headers.map(x => `<th>${esc(x)}</th>`).join('') + '<th></th></tr></thead><tbody>' +
-    rows.map((r, i) => '<tr>' + headers.map(k =>
-      `<td><input type="text" data-i="${i}" data-k="${esc(k)}" value="${esc(r[k] ?? '')}" placeholder="${esc(k)}" inputmode="${k === map.qty || k === map.price ? 'decimal' : 'text'}"></td>`).join('') +
-      `<td><button class="del" data-d="${i}">حذف</button></td></tr>`).join('') + '</tbody>';
-  $('rc').textContent = rows.length;
+$('tbl').innerHTML = '<thead><tr>' + headers.map(x => `<th>${esc(x)}</th>`).join('') + '<th></th></tr></thead><tbody>' +
+rows.map((r, i) => '<tr>' + headers.map(k =>
+`<td><input type="text" data-i="${i}" data-k="${esc(k)}" value="${esc(r[k] ?? '')}" placeholder="${k === map.sku ? '01-02' : esc(k)}" inputmode="${k === map.sku ? 'numeric' : (k === map.qty || k === map.price ? 'decimal' : 'text')}"${k === map.sku ? ' maxlength="5"' : ''}></td>`).join('') +
+`<td><button class="del" data-d="${i}">حذف</button></td></tr>`).join('') + '</tbody>';
+$('rc').textContent = rows.length;
 }
 $('tbl').addEventListener('input', e => {
-  const t = e.target; if (t.dataset.k === undefined) return;
-  const old = rows[t.dataset.i][t.dataset.k], v = t.value;
-  rows[t.dataset.i][t.dataset.k] = (typeof old === 'number' && v.trim() !== '' && !isNaN(v)) ? Number(v) : v;
-  clearTimeout(rt); rt = setTimeout(render, 120); save();
+const t = e.target; if (t.dataset.k === undefined) return;
+// خانة SKU: أرقام بس، والشرطة بتتحط لوحدها بعد أول رقمين (01-02)
+const isSku = !!map.sku && t.dataset.k === map.sku;
+if (isSku) {
+const d = t.value.replace(/\D/g, '').slice(0, 4);
+t.value = d.length > 2 ? d.slice(0, 2) + '-' + d.slice(2) : d;
+}
+const old = rows[t.dataset.i][t.dataset.k], v = t.value;
+rows[t.dataset.i][t.dataset.k] = (!isSku && typeof old === 'number' && v.trim() !== '' && !isNaN(v)) ? Number(v) : v;
+clearTimeout(rt); rt = setTimeout(render, 120); save();
 });
 $('tbl').addEventListener('keydown', e => {
-  const t = e.target; if (e.key !== 'Enter' || t.dataset.k === undefined) return;
-  e.preventDefault();
-  const i = +t.dataset.i;
-  if (i === rows.length - 1) addRow(t.dataset.k);
-  else { const n = document.querySelector(`#tbl input[data-i="${i + 1}"][data-k="${CSS.escape(t.dataset.k)}"]`); if (n) n.focus(); }
+const t = e.target; if (e.key !== 'Enter' || t.dataset.k === undefined) return;
+e.preventDefault();
+const i = +t.dataset.i;
+if (i === rows.length - 1) addRow(t.dataset.k);
+else { const n = document.querySelector(`#tbl input[data-i="${i + 1}"][data-k="${CSS.escape(t.dataset.k)}"]`); if (n) n.focus(); }
 });
 $('tbl').addEventListener('click', e => {
-  const d = e.target.dataset.d; if (d === undefined) return;
-  const r = rows[d];
-  if (code(r) && !confirm('حذف هذا الصنف؟')) return;
-  rows.splice(+d, 1); sel.splice(+d, 1); drawTable(); render(); save();
+const d = e.target.dataset.d; if (d === undefined) return;
+const r = rows[d];
+if (code(r) && !confirm('حذف هذا الصنف؟')) return;
+rows.splice(+d, 1); sel.splice(+d, 1); drawTable(); render(); save();
 });
 
 /* ---------- رسم الملصقات ---------- */
 function money(v) {
-  const n = parseFloat(String(v).replace(/,/g, ''));
-  return isNaN(n) ? v : n.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' LE';
+const n = parseFloat(String(v).replace(/,/g, ''));
+return isNaN(n) ? v : n.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' LE';
 }
 function fill(v, r) {
-  let any = false;
-  const s = v.replace(/\{([^}]+)\}/g, (m, k) => {
-    if (!(k in r)) return m;
-    const x = r[k]; if (x === '' || x == null) return '';
-    any = true; return k === map.price ? money(x) : x;
-  });
-  return (any || !/\{/.test(v)) ? s.trim() : '';
+let any = false;
+const s = v.replace(/\{([^}]+)\}/g, (m, k) => {
+if (!(k in r)) return m;
+const x = r[k]; if (x === '' || x == null) return '';
+any = true; return k === map.price ? money(x) : x;
+});
+return (any || !/\{/.test(v)) ? s.trim() : '';
 }
 function makeLabel(r) {
-  const d = document.createElement('div');
-  d.className = 'label'; d.dir = 'auto'; d.style.cssText = `width:${W()}mm;height:${H()}mm;padding:${MG()}`;
-  const inn = document.createElement('div'); inn.className = 'in'; inn.style.padding = PD(); inn.style.gap = LS() + 'mm'; d.appendChild(inn);
-  const c = code(r);
-  const bcOf = e => {
-    const b = document.createElement('div'); b.className = 'bc'; b.innerHTML = '<svg></svg>'; inn.appendChild(b);
-    if (!c) { b.innerHTML = '<div class="ln" style="margin:auto;color:#999;font-size:8pt">أدخل كود SKU</div>'; return; }
-    const s = b.firstChild;
-    try {
-      JsBarcode(s, c, { format: $('fmt').value, width: +$('bw').value, height: 50, fontSize: 14, margin: 0, marginLeft: 14, marginRight: 14, textMargin: 1, displayValue: false });
-      if (!s.getAttribute('viewBox')) s.setAttribute('viewBox', `0 0 ${s.getAttribute('width')} ${s.getAttribute('height')}`);
-      s.removeAttribute('width'); s.removeAttribute('height');
-      s.setAttribute('preserveAspectRatio', 'none'); s.setAttribute('shape-rendering', 'crispEdges');
-    } catch (x) { b.innerHTML = `<div class="ln" style="margin:auto;color:#b00;font-size:8pt">كود غير صالح لهذا النوع: ${esc(c)}</div>`; }
-  };
-  const mk = x => {
-    let s = fill(x.v, r); if (s && x.label && x.lbl !== false) s = x.label + ': ' + s;
-    const l = document.createElement('div'); l.className = 'ln'; l.textContent = s;
-    l.style.cssText = `font-size:${x.size}pt;font-weight:${($('fw').value === 'b' || x.bold) ? 700 : 400};text-align:${x.align}${x.font ? `;font-family:'${x.font}',Arial,sans-serif` : ''}`;
-    return { e: x, l, s };
-  };
-  // ترتيب العناصر حسب رقم السطر، والعناصر اللي ليها نفس الرقم تتعرض في نفس السطر
-  const groups = [];
-  els.map((e, i) => ({ e, i })).filter(o => o.e.show !== false)
-    .sort((a, b) => ((a.e.row || 0) - (b.e.row || 0)) || (a.i - b.i))
-    .forEach(({ e }) => {
-      const last = groups[groups.length - 1];
-      if (last && last.row === e.row) last.items.push(e); else groups.push({ row: e.row, items: [e] });
-    });
-  groups.forEach(g => {
-    const txt = g.items.filter(e => e.t === 'text').map(mk).filter(x => x.s || x.e.half);
-    if (txt.some(x => x.s)) {
-      const row = document.createElement('div'); row.style.cssText = 'display:flex;gap:1mm';
-      txt.forEach(x => {
-        x.l.style.flex = x.e.half ? '0 0 calc(50% - .5mm)' : '1 1 0';
-        x.l.style.minWidth = '0';
-        row.appendChild(x.l);
-      });
-      inn.appendChild(row);
-    }
-    g.items.filter(e => e.t === 'barcode').forEach(bcOf);
-  });
-  return d;
+const d = document.createElement('div');
+d.className = 'label'; d.dir = 'auto'; d.style.cssText = `width:${W()}mm;height:${H()}mm;padding:${MG()}`;
+const inn = document.createElement('div'); inn.className = 'in'; inn.style.padding = PD(); inn.style.gap = LS() + 'mm'; d.appendChild(inn);
+const c = code(r);
+const bcOf = e => {
+const b = document.createElement('div'); b.className = 'bc'; b.innerHTML = '<svg></svg>'; inn.appendChild(b);
+if (!c) { b.innerHTML = '<div class="ln" style="margin:auto;color:#999;font-size:8pt">أدخل كود SKU</div>'; return; }
+const s = b.firstChild;
+try {
+JsBarcode(s, c, { format: $('fmt').value, width: +$('bw').value, height: 50, fontSize: 14, margin: 0, marginLeft: 14, marginRight: 14, textMargin: 1, displayValue: false });
+if (!s.getAttribute('viewBox')) s.setAttribute('viewBox', `0 0 ${s.getAttribute('width')} ${s.getAttribute('height')}`);
+s.removeAttribute('width'); s.removeAttribute('height');
+s.setAttribute('preserveAspectRatio', 'none'); s.setAttribute('shape-rendering', 'crispEdges');
+} catch (x) { b.innerHTML = `<div class="ln" style="margin:auto;color:#b00;font-size:8pt">كود غير صالح لهذا النوع: ${esc(c)}</div>`; }
+};
+const mk = x => {
+let s = fill(x.v, r); if (s && x.label && x.lbl !== false) s = x.label + ': ' + s;
+const l = document.createElement('div'); l.className = 'ln'; l.textContent = s;
+l.style.cssText = `font-size:${x.size}pt;font-weight:${($('fw').value === 'b' || x.bold) ? 700 : 400};text-align:${x.align}${x.font ? `;font-family:'${x.font}',Arial,sans-serif` : ''}`;
+return { e: x, l, s };
+};
+// ترتيب العناصر حسب رقم السطر، والعناصر اللي ليها نفس الرقم تتعرض في نفس السطر
+const groups = [];
+els.map((e, i) => ({ e, i })).filter(o => o.e.show !== false)
+.sort((a, b) => ((a.e.row || 0) - (b.e.row || 0)) || (a.i - b.i))
+.forEach(({ e }) => {
+const last = groups[groups.length - 1];
+if (last && last.row === e.row) last.items.push(e); else groups.push({ row: e.row, items: [e] });
+});
+groups.forEach(g => {
+const txt = g.items.filter(e => e.t === 'text').map(mk).filter(x => x.s || x.e.half);
+if (txt.some(x => x.s)) {
+const row = document.createElement('div'); row.style.cssText = 'display:flex;gap:1mm';
+txt.forEach(x => {
+x.l.style.flex = x.e.half ? '0 0 calc(50% - .5mm)' : '1 1 0';
+x.l.style.minWidth = '0';
+row.appendChild(x.l);
+});
+inn.appendChild(row);
+}
+g.items.filter(e => e.t === 'barcode').forEach(bcOf);
+});
+return d;
 }
 const printable = i => sel[i] && qty(i) > 0 && !(hasB() && !code(rows[i]));
 function total() { return rows.reduce((n, r, i) => n + (printable(i) ? qty(i) : 0), 0); }
 
 function render() {
-  const area = $('area'); area.innerHTML = '';
-  rows.forEach((r, i) => {
-    const w = document.createElement('div'); w.className = 'pv' + (sel[i] ? ' on' : ''); w.dataset.i = i;
-    w.appendChild(makeLabel(r));
-    const b = document.createElement('span'); b.className = 'bd'; if (map.qty) { b.append('×'); const q = document.createElement('input'); q.type = 'number'; q.min = 0; q.className = 'qi'; q.value = qty(i); q.title = 'عدد النسخ'; b.appendChild(q); }
-    else b.textContent = '×1';
-    w.appendChild(b);
-    area.appendChild(w);
-  });
-  if (!rows.length) area.innerHTML = '<div class="empty">أضف صنفًا لتظهر المعاينة.</div>';
-  updCount();
+const area = $('area'); area.innerHTML = '';
+rows.forEach((r, i) => {
+const w = document.createElement('div'); w.className = 'pv' + (sel[i] ? ' on' : ''); w.dataset.i = i;
+w.appendChild(makeLabel(r));
+const b = document.createElement('span'); b.className = 'bd'; if (map.qty) { b.append('×'); const q = document.createElement('input'); q.type = 'number'; q.min = 0; q.className = 'qi'; q.value = qty(i); q.title = 'عدد النسخ'; b.appendChild(q); }
+else b.textContent = '×1';
+w.appendChild(b);
+area.appendChild(w);
+});
+if (!rows.length) area.innerHTML = '<div class="empty">أضف صنفًا لتظهر المعاينة.</div>';
+updCount();
 }
 function drawSample() {
-  const box = $('sample'); if (!box) return;
-  box.innerHTML = '';
-  if (!rows.length) { box.innerHTML = '<div class="empty">أضف صنفًا لتظهر المعاينة.</div>'; return; }
-  const r = rows.find(x => code(x)) || rows[0];
-  box.appendChild(makeLabel(r));
+const box = $('sample'); if (!box) return;
+box.innerHTML = '';
+if (!rows.length) { box.innerHTML = '<div class="empty">أضف صنفًا لتظهر المعاينة.</div>'; return; }
+const r = rows.find(x => code(x)) || rows[0];
+box.appendChild(makeLabel(r));
 }
 function updCount() {
-  drawSample();
-  const n = total(); $('count').textContent = n; $('print').disabled = !n;
+drawSample();
+const n = total(); $('count').textContent = n; $('print').disabled = !n;
 }
 $('area').addEventListener('input', e => {
-  const t = e.target; if (!t.classList.contains('qi')) return;
-  const i = +t.closest('.pv').dataset.i, n = parseInt(t.value);
-  rows[i][map.qty] = isNaN(n) ? '' : Math.max(0, n);
-  const c = document.querySelector(`#tbl input[data-i="${i}"][data-k="${CSS.escape(map.qty)}"]`);
-  if (c) c.value = rows[i][map.qty];
-  updCount(); save();
+const t = e.target; if (!t.classList.contains('qi')) return;
+const i = +t.closest('.pv').dataset.i, n = parseInt(t.value);
+rows[i][map.qty] = isNaN(n) ? '' : Math.max(0, n);
+const c = document.querySelector(`#tbl input[data-i="${i}"][data-k="${CSS.escape(map.qty)}"]`);
+if (c) c.value = rows[i][map.qty];
+updCount(); save();
 });
 $('area').addEventListener('click', e => {
-  if (e.target.closest('.bd')) return;
-  const w = e.target.closest('.pv'); if (!w) return;
-  const i = +w.dataset.i; sel[i] = !sel[i]; w.classList.toggle('on', sel[i]); updCount(); save();
+if (e.target.closest('.bd')) return;
+const w = e.target.closest('.pv'); if (!w) return;
+const i = +w.dataset.i; sel[i] = !sel[i]; w.classList.toggle('on', sel[i]); updCount(); save();
 });
 function showLens(i) {
-  const L = $('lens'); L.innerHTML = '';
-  const lb = makeLabel(rows[i]);
-  const wpx = W() * 3.7795, hpx = H() * 3.7795;
-  lb.style.zoom = Math.min(Math.min(innerWidth * .8, 900) / wpx, innerHeight * .8 / hpx);
-  L.appendChild(lb); L.classList.add('on');
+const L = $('lens'); L.innerHTML = '';
+const lb = makeLabel(rows[i]);
+const wpx = W() * 3.7795, hpx = H() * 3.7795;
+lb.style.zoom = Math.min(Math.min(innerWidth * .8, 900) / wpx, innerHeight * .8 / hpx);
+L.appendChild(lb); L.classList.add('on');
 }
 const closeLens = () => $('lens').classList.remove('on');
 $('area').addEventListener('contextmenu', e => {
-  const w = e.target.closest('.pv'); if (!w) return;
-  e.preventDefault(); showLens(+w.dataset.i);
+const w = e.target.closest('.pv'); if (!w) return;
+e.preventDefault(); showLens(+w.dataset.i);
 });
 $('lens').addEventListener('click', closeLens);
 $('lens').addEventListener('contextmenu', e => { e.preventDefault(); closeLens(); });
@@ -501,35 +507,35 @@ $('pNone').onclick = () => { sel = sel.map(() => false); render(); save(); };
 
 /* ---------- الطباعة والتحميل ---------- */
 $('print').onclick = () => {
-  const pa = $('printArea'), w = W(), h = H();
-  pa.innerHTML = '';
-  rows.forEach((r, i) => { if (printable(i)) for (let k = 0; k < qty(i); k++) pa.appendChild(makeLabel(r)); });
-  if (!pa.children.length) return alert('حدد ملصقًا واحدًا على الأقل، وتأكد من كود SKU وعمود Qty.');
-  pa.className = 'roll';
-  let ps = $('ps'); if (!ps) { ps = document.createElement('style'); ps.id = 'ps'; document.head.appendChild(ps); }
-  ps.textContent = `@page{size:${w}mm ${h}mm;margin:0}`;
-  window.print();
+const pa = $('printArea'), w = W(), h = H();
+pa.innerHTML = '';
+rows.forEach((r, i) => { if (printable(i)) for (let k = 0; k < qty(i); k++) pa.appendChild(makeLabel(r)); });
+if (!pa.children.length) return alert('حدد ملصقًا واحدًا على الأقل، وتأكد من كود SKU وعمود Qty.');
+pa.className = 'roll';
+let ps = $('ps'); if (!ps) { ps = document.createElement('style'); ps.id = 'ps'; document.head.appendChild(ps); }
+ps.textContent = `@page{size:${w}mm ${h}mm;margin:0}`;
+window.print();
 };
 window.addEventListener('afterprint', () => { $('printArea').innerHTML = ''; });
 
 const stamp = () => new Date().toISOString().slice(0, 10);
 $('dlx').onclick = () => {
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows, { header: headers }), 'Sheet1');
-  XLSX.writeFile(wb, `barcodes-${stamp()}.xlsx`);
+const wb = XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows, { header: headers }), 'Sheet1');
+XLSX.writeFile(wb, `barcodes-${stamp()}.xlsx`);
 };
 $('dlj').onclick = () => {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' }));
-  a.download = `barcodes-${stamp()}.json`; a.click(); URL.revokeObjectURL(a.href);
+const a = document.createElement('a');
+a.href = URL.createObjectURL(new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' }));
+a.download = `barcodes-${stamp()}.json`; a.click(); URL.revokeObjectURL(a.href);
 };
 
 /* ---------- رفع الملفات والتشغيل ---------- */
 // رفع من الخطوة 1 أو السحب: لو فيه أصناف موجودة نسأل (إضافة ولا استبدال)
 const go = fs => {
-  if (!fs.length) return;
-  const add = rows.length > 0 && confirm('فيه أصناف حالية.\nOK = إضافة الملفات عليها\nCancel = استبدالها بالملفات الجديدة');
-  load(fs, add);
+if (!fs.length) return;
+const add = rows.length > 0 && confirm('فيه أصناف حالية.\nOK = إضافة الملفات عليها\nCancel = استبدالها بالملفات الجديدة');
+load(fs, add);
 };
 $('file').onchange = e => { go(e.target.files); e.target.value = ''; };
 // زر "إضافة ملفات" في الخطوة 2: دايمًا بيضيف على الموجود
@@ -540,23 +546,23 @@ const drop = $('drop');
 drop.addEventListener('drop', e => go(e.dataTransfer.files));
 
 (function init() {
-  try {
-    const d = JSON.parse(localStorage.getItem(KEY) || 'null');
-    if (!d || !d.rows || !d.headers) return;
-    rows = d.rows; headers = d.headers; sel = d.sel || rows.map(() => true); els = norm(d.els || []);
-    Object.entries(d.s || {}).forEach(([k, v]) => { const e = $(k); if (e) e.value = v; });
-    // المارجن والبادنج القدام كانوا رقم واحد: وزّعه على الاتجاهات الأربعة
-    [['mg', 'm'], ['pd', 'p']].forEach(([o, nn]) => { if (d.s && d.s[o] != null && d.s[nn + 't'] == null) ['t', 'r', 'b', 'l'].forEach(x => $(nn + x).value = d.s[o]); });
-    // الإعدادات القديمة كانت بالمليمتر: حوّلها لسنتيمتر مرة واحدة
-    if (d.s && d.s.w != null && d.s.u !== 'cm') ['w', 'h'].forEach(k => { const v = parseFloat($(k).value); if (!isNaN(v)) $(k).value = +(v / 10).toFixed(2); });
-    // تحويل التصاميم القديمة المحفوظة ("Product: {Product}") للشكل الجديد بعنوان قابل للإخفاء
-    els.forEach(e => {
-      if (e.t !== 'text' || e.label) return;
-      const m = String(e.v).match(/^(.+): \{(.+)\}$/);
-      if (m && m[1] === m[2] && headers.includes(m[1])) { e.v = `{${m[1]}}`; e.label = m[1]; }
-    });
-    if (d.s && d.s.bw === '1.5' && !d.s.bw2) { $('bw').value = '2'; } detect(); els = migrate(els); start(!els.length);
-  } catch (e) {}
+try {
+const d = JSON.parse(localStorage.getItem(KEY) || 'null');
+if (!d || !d.rows || !d.headers) return;
+rows = d.rows; headers = d.headers; sel = d.sel || rows.map(() => true); els = norm(d.els || []);
+Object.entries(d.s || {}).forEach(([k, v]) => { const e = $(k); if (e) e.value = v; });
+// المارجن والبادنج القدام كانوا رقم واحد: وزّعه على الاتجاهات الأربعة
+[['mg', 'm'], ['pd', 'p']].forEach(([o, nn]) => { if (d.s && d.s[o] != null && d.s[nn + 't'] == null) ['t', 'r', 'b', 'l'].forEach(x => $(nn + x).value = d.s[o]); });
+// الإعدادات القديمة كانت بالمليمتر: حوّلها لسنتيمتر مرة واحدة
+if (d.s && d.s.w != null && d.s.u !== 'cm') ['w', 'h'].forEach(k => { const v = parseFloat($(k).value); if (!isNaN(v)) $(k).value = +(v / 10).toFixed(2); });
+// تحويل التصاميم القديمة المحفوظة ("Product: {Product}") للشكل الجديد بعنوان قابل للإخفاء
+els.forEach(e => {
+if (e.t !== 'text' || e.label) return;
+const m = String(e.v).match(/^(.+): \{(.+)\}$/);
+if (m && m[1] === m[2] && headers.includes(m[1])) { e.v = `{${m[1]}}`; e.label = m[1]; }
+});
+if (d.s && d.s.bw === '1.5' && !d.s.bw2) { $('bw').value = '2'; } detect(); els = migrate(els); start(!els.length);
+} catch (e) {}
 })();
 </script>
 </body>
