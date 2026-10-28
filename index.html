@@ -134,7 +134,7 @@ td input[type=text]{width:100%;min-width:120px;text-align:center}
       <label class="f">المسافة بين السطور (مم)<input type="number" id="ls" value="0.3" min="0" max="20" step="0.1"></label>
       <label class="f">وزن الخط<select id="fw"><option value="b" selected>Bold لكل السطور</option><option value="n">حسب خانة Bold لكل سطر</option></select></label>
       <label class="f">نوع الباركود<select id="fmt"><option>CODE128</option><option>CODE39</option></select></label>
-      <label class="f">سمك الخطوط<select id="bw"><option value="1">رفيع</option><option value="1.5" selected>متوسط</option><option value="2">سميك</option></select></label>
+      <label class="f">سمك الخطوط<select id="bw"><option value="1">رفيع</option><option value="1.5">متوسط</option><option value="2" selected>سميك</option></select></label>
     </div>
     <h2 style="margin:18px 0 8px">مصمم الملصق (أي تعديل يحوّله لتصميم مخصص)</h2>
     <div id="des"></div>
@@ -399,10 +399,10 @@ function makeLabel(r) {
     if (!c) { b.innerHTML = '<div class="ln" style="margin:auto;color:#999;font-size:8pt">أدخل كود SKU</div>'; return; }
     const s = b.firstChild;
     try {
-      JsBarcode(s, c, { format: $('fmt').value, width: +$('bw').value, height: 50, fontSize: 14, margin: 0, textMargin: 1, displayValue: false });
+      JsBarcode(s, c, { format: $('fmt').value, width: +$('bw').value, height: 50, fontSize: 14, margin: 0, marginLeft: 14, marginRight: 14, textMargin: 1, displayValue: false });
       if (!s.getAttribute('viewBox')) s.setAttribute('viewBox', `0 0 ${s.getAttribute('width')} ${s.getAttribute('height')}`);
       s.removeAttribute('width'); s.removeAttribute('height');
-      s.setAttribute('preserveAspectRatio', 'none');
+      s.setAttribute('preserveAspectRatio', 'none'); s.setAttribute('shape-rendering', 'crispEdges');
     } catch (x) { b.innerHTML = `<div class="ln" style="margin:auto;color:#b00;font-size:8pt">كود غير صالح لهذا النوع: ${esc(c)}</div>`; }
   };
   const mk = x => {
@@ -549,7 +549,7 @@ drop.addEventListener('drop', e => go(e.dataTransfer.files));
       const m = String(e.v).match(/^(.+): \{(.+)\}$/);
       if (m && m[1] === m[2] && headers.includes(m[1])) { e.v = `{${m[1]}}`; e.label = m[1]; }
     });
-    detect(); els = migrate(els); start(!els.length);
+    if (d.s && d.s.bw === '1.5' && !d.s.bw2) { $('bw').value = '2'; } detect(); els = migrate(els); start(!els.length);
   } catch (e) {}
 })();
 </script>
