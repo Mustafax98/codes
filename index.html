@@ -106,6 +106,7 @@ td input[type=text]{width:100%;min-width:120px;text-align:center}
     <div class="bar" style="margin-bottom:10px">
       <button id="add">+ إضافة صنف</button>
       <label class="btn alt">+ إضافة ملفات<input type="file" id="file2" accept=".xlsx,.xls,.csv,.json" multiple hidden></label>
+      <button class="alt" id="delAll" style="color:#d62f2f">مسح كل الأصناف</button>
       <span class="stat">اكتب في الخانات والمعاينة بتتحدث لوحدها. اضغط Enter للانتقال للصف التالي.</span>
       <span class="stat" style="margin-inline-start:auto">الأصناف: <b id="rc">0</b></span>
     </div>
@@ -347,6 +348,11 @@ function addRow(k) {
   $('tw').scrollTop = 1e6;
 }
 $('add').onclick = () => addRow();
+$('delAll').onclick = () => {
+  if (!rows.length) return;
+  if (!confirm(`هيتم مسح كل الأصناف (${rows.length}) من الجدول. التصميم والإعدادات هتفضل زي ما هي. متأكد؟`)) return;
+  rows = []; sel = []; drawTable(); render(); save();
+};
 
 function drawTable() {
   $('tbl').innerHTML = '<thead><tr>' + headers.map(x => `<th>${esc(x)}</th>`).join('') + '<th></th></tr></thead><tbody>' +
